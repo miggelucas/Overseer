@@ -1,29 +1,23 @@
 package com.personal.loghub.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LogEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    public String service;
-    public String level;
-    public String message;
-    public LocalDateTime timestamp;
 
-    public LogEntry(String service, String level, String message) {
-        this.service = service;
-        this.level = level;
-        this.message = message;
-        this.timestamp = LocalDateTime.now();
-    }
+    private String application;
+    private String level;
+    private String message;
 
+    private LocalDateTime timestamp;
 }

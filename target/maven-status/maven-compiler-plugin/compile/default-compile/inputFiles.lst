@@ -1,4 +1,5 @@
-/Users/lucasmigge/Downloads/loghub/src/main/java/com/personal/loghub/LoghubApplication.java
-/Users/lucasmigge/Downloads/loghub/src/main/java/com/personal/loghub/controller/LogController.java
-/Users/lucasmigge/Downloads/loghub/src/main/java/com/personal/loghub/model/LogEntry.java
-/Users/lucasmigge/Downloads/loghub/src/main/java/com/personal/loghub/repository/LogRepository.java
+/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/LoghubApplication.java
+/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/controller/LogController.java
+/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/model/LogEntry.java
+/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/repository/LogRepository.java
+/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/service/LogService.java
