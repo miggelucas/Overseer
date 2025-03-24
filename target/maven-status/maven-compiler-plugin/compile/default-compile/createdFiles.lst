@@ -1,0 +1,5 @@
+com/personal/loghub/LoghubApplication.class
+com/personal/loghub/model/LogEntry.class
+com/personal/loghub/controller/LogController.class
+com/personal/loghub/repository/LogRepository.class
+com/personal/loghub/service/LogService.class
