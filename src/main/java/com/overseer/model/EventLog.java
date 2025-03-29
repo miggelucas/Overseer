@@ -1,5 +1,6 @@
-package com.personal.loghub.model;
+package com.overseer.model;
 
+import com.overseer.util.Level;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,13 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LogEntry {
+public class EventLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String application;
-    private String level;
+    private Level level;
     private String message;
 
     private LocalDateTime timestamp;

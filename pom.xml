@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.personal</groupId>
-	<artifactId>loghub</artifactId>
+	<artifactId>Overseer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>loghub</name>
 	<description>Demo project for Spring Boot</description>
@@ -54,6 +54,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.stefanbirkner</groupId>
+			<artifactId>system-lambda</artifactId>
+			<version>1.2.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

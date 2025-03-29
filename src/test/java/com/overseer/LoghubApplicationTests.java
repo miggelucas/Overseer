@@ -1,10 +1,10 @@
-package com.personal.loghub;
+package com.overseer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LoghubApplicationTests {
+class OverseerApplicationTests {
 
 	@Test
 	void contextLoads() {

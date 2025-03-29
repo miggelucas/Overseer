@@ -1,5 +1,9 @@
-/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/LoghubApplication.java
-/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/controller/LogController.java
-/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/model/LogEntry.java
-/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/repository/LogRepository.java
-/Users/lucasbarros/IdeaProjects/Overseer/src/main/java/com/personal/loghub/service/LogService.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/OverseerApplication.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/controller/EventController.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/controller/HomeController.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/logging/Logger.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/model/EventLog.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/repository/EventRepository.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/service/EventService.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/service/EventServiceImpl.java
+/Users/lucasmigge/Documents/Overseer/src/main/java/com/overseer/util/Level.java

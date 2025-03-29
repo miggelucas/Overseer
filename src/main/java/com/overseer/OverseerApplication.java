@@ -1,13 +1,12 @@
-package com.personal.loghub;
+package com.overseer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LoghubApplication {
+public class OverseerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LoghubApplication.class, args);
+		SpringApplication.run(OverseerApplication.class, args);
 	}
-
 }

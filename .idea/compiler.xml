@@ -11,14 +11,14 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="loghub" />
+        <module name="Overseer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="24" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="loghub" options="-parameters" />
+      <module name="Overseer" options="-parameters" />
     </option>
   </component>
 </project>
