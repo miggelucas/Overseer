@@ -31,6 +31,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<EventLog> getByApplication(String applicationName) {
+        return null;
+    }
+
+    @Override
     public EventLog update(EventLog eventLog, Long id) {
         EventLog log = getById(id);
         log.setApplication(eventLog.getApplication());

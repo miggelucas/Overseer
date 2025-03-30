@@ -12,6 +12,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 class EventServiceImplTest {
@@ -116,6 +117,46 @@ class EventServiceImplTest {
         // Assert
         assertNull(result);
         verify(eventRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getByApplication_ShouldReturnListOfLogEntries_WhenApplicationExists() {
+        // Arrange
+        String applicationName = "TestApp";
+        List<EventLog> logEntries = List.of(
+                EventLog.builder().id(1L).application("OtherApp").level(Level.INFO).message("Log 1").timestamp(LocalDateTime.now()).build(),
+                EventLog.builder().id(2L).application(applicationName).level(Level.ERROR).message("Log 2").timestamp(LocalDateTime.now()).build(),
+                EventLog.builder().id(3L).application(applicationName).level(Level.ERROR).message("Log 3").timestamp(LocalDateTime.now()).build(),
+                EventLog.builder().id(4L).application("AnotherApp").level(Level.ERROR).message("Log 4").timestamp(LocalDateTime.now()).build()
+        );
+
+        when(eventRepository.findByApplication(applicationName)).thenReturn(logEntries);
+
+        // Act
+        List<EventLog> result = logServiceImpl.getByApplication(applicationName);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(applicationName, result.get(0).getApplication());
+        assertEquals(applicationName, result.get(1).getApplication());
+        verify(eventRepository, times(1)).findByApplication(applicationName);
+    }
+
+    @Test
+    void getByApplication_ShouldReturnEmptyList_WhenApplicationDoesNotExist() {
+        // Arrange
+        String applicationName = "NonExistentApp";
+
+        when(eventRepository.findByApplication(applicationName)).thenReturn(Collections.emptyList());
+
+        // Act
+        List<EventLog> result = logServiceImpl.getByApplication(applicationName);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(eventRepository, times(1)).findByApplication(applicationName);
     }
 
     @Test
