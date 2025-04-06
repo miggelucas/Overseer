@@ -8,7 +8,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-# .mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
 *.log
 
 # IntelliJ IDEA
@@ -34,3 +34,6 @@ tmp/
 
 # Windows
 Thumbs.db
+
+# Dotenv
+.env
