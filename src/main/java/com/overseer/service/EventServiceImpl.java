@@ -5,7 +5,7 @@ import com.overseer.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -16,7 +16,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventLog save(EventLog eventLog) {
-        eventLog.setTimestamp(LocalDateTime.now());
         return eventRepository.save(eventLog);
     }
 
@@ -27,18 +26,19 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventLog getById(Long id) {
-        return eventRepository.findById(id).orElse(null);
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("EventLog not found with id: " + id));
     }
 
     @Override
-    public EventLog update(EventLog eventLog, Long id) {
+    public EventLog update(EventLog eventLogDetails, Long id) {
         EventLog log = getById(id);
-        log.setApplication(eventLog.getApplication());
-        log.setLevel(eventLog.getLevel());
-        log.setMessage(eventLog.getMessage());
-        log.setTimestamp(eventLog.getTimestamp());
 
-        return save(log);
+        log.setApplication(eventLogDetails.getApplication());
+        log.setLevel(eventLogDetails.getLevel());
+        log.setMessage(eventLogDetails.getMessage());
+
+        return eventRepository.save(log);
     }
 
     @Override

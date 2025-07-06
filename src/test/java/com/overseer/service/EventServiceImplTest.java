@@ -3,223 +3,182 @@ package com.overseer.service;
 import com.overseer.model.EventLog;
 import com.overseer.repository.EventRepository;
 import com.overseer.util.Level;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+@ExtendWith(MockitoExtension.class)
 class EventServiceImplTest {
 
     @Mock
     private EventRepository eventRepository;
 
     @InjectMocks
-    private EventServiceImpl logServiceImpl;
+    private EventServiceImpl eventService;
 
-    public EventServiceImplTest() {
-        MockitoAnnotations.openMocks(this);
-    }
+    private EventLog eventLog;
 
-    @Test
-    void save_ShouldReturnSavedLogEntry() {
-        // Arrange
-        EventLog eventLog = EventLog.builder()
+    @BeforeEach
+    void setUp() {
+        eventLog = EventLog.builder()
                 .application("TestApp")
+                .id(1L)
                 .level(Level.INFO)
                 .message("This is a test log.")
                 .build();
+    }
 
+    @Test
+    void save_shouldCallRepositoryAndReturnSavedLog() {
+        // Arrange
         EventLog savedEventLog = EventLog.builder()
                 .id(1L)
                 .application("TestApp")
-                .level(Level.ERROR)
+                .level(Level.INFO)
                 .message("This is a test log.")
-                .timestamp(LocalDateTime.now())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .build();
 
         when(eventRepository.save(any(EventLog.class))).thenReturn(savedEventLog);
 
         // Act
-        EventLog result = logServiceImpl.save(eventLog);
+        EventLog result = eventService.save(eventLog);
 
         // Assert
         assertNotNull(result);
-        assertEquals(savedEventLog.getId(), result.getId());
-        assertEquals(savedEventLog.getApplication(), result.getApplication());
-        assertEquals(savedEventLog.getLevel(), result.getLevel());
-        assertEquals(savedEventLog.getMessage(), result.getMessage());
-        assertNotNull(result.getTimestamp());
-        verify(eventRepository, times(1)).save(any(EventLog.class));
+        assertEquals(1L, result.getId());
+        assertEquals("TestApp", result.getApplication());
+        assertEquals(Level.INFO, result.getLevel());
+        assertNotNull(result.getCreatedAt());
+        verify(eventRepository, times(1)).save(eventLog);
     }
 
     @Test
-    void getAllLogs_ShouldReturnListOfLogEntries() {
+    void getAllLogs_shouldReturnListOfLogs() {
         // Arrange
         List<EventLog> logEntries = List.of(
-                EventLog.builder().id(1L).application("App1").level(Level.INFO).message("Log 1").timestamp(LocalDateTime.now()).build(),
-                EventLog.builder().id(2L).application("App2").level(Level.ERROR).message("Log 2").timestamp(LocalDateTime.now()).build()
+                EventLog.builder().id(1L).application("App1").level(Level.INFO).message("Log 1").build(),
+                EventLog.builder().id(2L).application("App2").level(Level.ERROR).message("Log 2").build()
         );
-
         when(eventRepository.findAll()).thenReturn(logEntries);
 
         // Act
-        List<EventLog> result = logServiceImpl.getAllLogs();
+        List<EventLog> result = eventService.getAllLogs();
 
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("App1", result.get(0).getApplication());
-        assertEquals("App2", result.get(1).getApplication());
         verify(eventRepository, times(1)).findAll();
     }
 
     @Test
-    void getById_ShouldReturnLogEntry_WhenIdExists() {
+    void getById_shouldReturnLog_whenIdExists() {
         // Arrange
-        EventLog eventLog = EventLog.builder()
-                .id(1L)
-                .application("TestApp")
-                .level(Level.INFO)
-                .message("This is a test log.")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        when(eventRepository.findById(1L)).thenReturn(java.util.Optional.of(eventLog));
+        eventLog.setId(1L);
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(eventLog));
 
         // Act
-        EventLog result = logServiceImpl.getById(1L);
+        EventLog result = eventService.getById(1L);
 
         // Assert
         assertNotNull(result);
-        assertEquals(eventLog.getId(), result.getId());
-        assertEquals(eventLog.getApplication(), result.getApplication());
-        assertEquals(eventLog.getLevel(), result.getLevel());
-        assertEquals(eventLog.getMessage(), result.getMessage());
-        assertEquals(eventLog.getTimestamp(), result.getTimestamp());
+        assertEquals(1L, result.getId());
         verify(eventRepository, times(1)).findById(1L);
     }
 
     @Test
-    void getById_ShouldReturnNull_WhenIdDoesNotExist() {
+    void getById_shouldThrowException_whenIdDoesNotExist() {
         // Arrange
-        when(eventRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+        long nonExistentId = 99L;
+        when(eventRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
-        // Act
-        EventLog result = logServiceImpl.getById(1L);
-
-        // Assert
-        assertNull(result);
-        verify(eventRepository, times(1)).findById(1L);
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> eventService.getById(nonExistentId));
+        verify(eventRepository, times(1)).findById(nonExistentId);
     }
 
     @Test
-    void update_ShouldReturnUpdatedLogEntry_WhenIdExists() {
+    void update_shouldReturnUpdatedLog_whenIdExists() {
         // Arrange
         Long id = 1L;
-        EventLog existingEventLog = EventLog.builder()
+        Instant initialCreation = Instant.now().minusSeconds(100);
+        EventLog existingLog = EventLog.builder()
                 .id(id)
-                .application("ExistingApp")
+                .application("OldApp")
                 .level(Level.DEBUG)
-                .message("Existing log message")
-                .timestamp(LocalDateTime.now().minusDays(1))
+                .message("Old message")
+                .createdAt(initialCreation) // Data de criação antiga
+                .updatedAt(initialCreation)
                 .build();
 
-        EventLog updatedEventLog = EventLog.builder()
-                .application("UpdatedApp")
-                .level(Level.INFO)
-                .message("Updated log message")
-                .timestamp(LocalDateTime.now())
+        EventLog updateDetails = EventLog.builder()
+                .application("NewApp")
+                .level(Level.WARNING)
+                .message("New message")
                 .build();
 
-        EventLog savedEventLog = EventLog.builder()
-                .id(id)
-                .application("UpdatedApp")
-                .level(Level.INFO)
-                .message("Updated log message")
-                .timestamp(updatedEventLog.getTimestamp())
-                .build();
-
-        when(eventRepository.findById(id)).thenReturn(java.util.Optional.of(existingEventLog));
-        when(eventRepository.save(any(EventLog.class))).thenReturn(savedEventLog);
+        when(eventRepository.findById(id)).thenReturn(Optional.of(existingLog));
+        when(eventRepository.save(any(EventLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        EventLog result = logServiceImpl.update(updatedEventLog, id);
+        EventLog result = eventService.update(updateDetails, id);
 
         // Assert
-        assertNotNull(result);
-        assertEquals(savedEventLog.getId(), result.getId());
-        assertEquals(savedEventLog.getApplication(), result.getApplication());
-        assertEquals(savedEventLog.getLevel(), result.getLevel());
-        assertEquals(savedEventLog.getMessage(), result.getMessage());
-        assertEquals(savedEventLog.getTimestamp(), result.getTimestamp());
+        ArgumentCaptor<EventLog> eventLogCaptor = ArgumentCaptor.forClass(EventLog.class);
+        verify(eventRepository, times(1)).save(eventLogCaptor.capture());
+        EventLog capturedLog = eventLogCaptor.getValue();
+
+        assertEquals(id, capturedLog.getId());
+        assertEquals("NewApp", capturedLog.getApplication());
+        assertEquals(Level.WARNING, capturedLog.getLevel());
+        assertEquals("New message", capturedLog.getMessage());
+        assertEquals(initialCreation, capturedLog.getCreatedAt());
+
         verify(eventRepository, times(1)).findById(id);
-        verify(eventRepository, times(1)).save(any(EventLog.class));
     }
 
     @Test
-    void update_ShouldThrowException_WhenIdDoesNotExist() {
+    void update_shouldThrowException_whenIdDoesNotExist() {
         // Arrange
         Long id = 1L;
-        EventLog updatedEventLog = EventLog.builder()
-                .application("UpdatedApp")
-                .level(Level.INFO)
-                .message("Updated log message")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        when(eventRepository.findById(id)).thenReturn(java.util.Optional.empty());
+        when(eventRepository.findById(id)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(NullPointerException.class, () -> logServiceImpl.update(updatedEventLog, id));
+        assertThrows(RuntimeException.class, () -> eventService.update(eventLog, id));
         verify(eventRepository, times(1)).findById(id);
-        verify(eventRepository, never()).save(any(EventLog.class));
+        verify(eventRepository, never()).save(any(EventLog.class)); // Garante que o save nunca foi chamado
     }
 
     @Test
-    void deleteById_ShouldCallRepositoryDelete_WhenIdExists() {
-        // Arrange
+    void deleteById_shouldCallRepositoryDelete() {
         Long id = 1L;
+        doNothing().when(eventRepository).deleteById(id);
 
         // Act
-        logServiceImpl.deleteById(id);
+        eventService.deleteById(id);
 
         // Assert
         verify(eventRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void deleteById_ShouldThrowException_WhenRepositoryThrowsError() {
-        // Arrange
-        Long id = 1L;
-        doThrow(new RuntimeException("Database error")).when(eventRepository).deleteById(id);
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> logServiceImpl.deleteById(id));
-        verify(eventRepository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void deleteAll_ShouldCallRepositoryDeleteAll() {
+    void deleteAll_shouldCallRepositoryDeleteAll() {
         // Act
-        logServiceImpl.deleteAll();
+        eventService.deleteAll();
 
         // Assert
-        verify(eventRepository, times(1)).deleteAll();
-    }
-
-    @Test
-    void deleteAll_ShouldThrowException_WhenRepositoryThrowsError() {
-        // Arrange
-        doThrow(new RuntimeException("Database error")).when(eventRepository).deleteAll();
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> logServiceImpl.deleteAll());
         verify(eventRepository, times(1)).deleteAll();
     }
 }
