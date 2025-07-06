@@ -9,9 +9,9 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
         <module name="Overseer" />
+        <module name="loghub" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="24" />
@@ -19,6 +19,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Overseer" options="-parameters" />
+      <module name="loghub" options="-parameters" />
     </option>
   </component>
 </project>

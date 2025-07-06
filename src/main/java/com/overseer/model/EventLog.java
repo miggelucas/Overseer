@@ -4,7 +4,7 @@ import com.overseer.util.Level;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -22,5 +22,6 @@ public class EventLog {
     private Level level;
     private String message;
 
-    private LocalDateTime timestamp;
+    private Instant createdAt;
+    private Instant updatedAt;
 }

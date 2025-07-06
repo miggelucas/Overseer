@@ -5,7 +5,7 @@ import com.overseer.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -16,7 +16,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventLog save(EventLog eventLog) {
-        eventLog.setTimestamp(LocalDateTime.now());
+        eventLog.setTimestamp(Instant.now());
         return eventRepository.save(eventLog);
     }
 
